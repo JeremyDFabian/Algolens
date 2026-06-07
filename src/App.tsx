@@ -9,6 +9,7 @@ import {
 } from './visualizers';
 import { useTheme } from './theme';
 import { ThemeToggle } from './components/ThemeToggle';
+import { usePlayback } from './hooks/usePlayback';
 import './styles.css';
 
 const stateLabels: Record<string, string> = {
@@ -20,46 +21,20 @@ const stateLabels: Record<string, string> = {
   muted: 'Muted'
 };
 
-const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
-
 function App() {
   const { theme, toggle } = useTheme();
   const [topicId, setTopicId] = useState<TopicId>('stack');
-  const [stepIndex, setStepIndex] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [speed, setSpeed] = useState(900);
 
   const activeTopic = useMemo(() => topics.find((topic) => topic.id === topicId) ?? topics[0], [topicId]);
   const steps = useMemo(() => activeTopic.createSteps(), [activeTopic]);
   const meta = visualizerMeta[topicId];
-  const currentStep = steps[clamp(stepIndex, 0, steps.length - 1)];
-  const progress = ((stepIndex + 1) / steps.length) * 100;
+  const playback = usePlayback(steps.length);
+  const currentStep = steps[playback.stepIndex];
+  const progress = ((playback.stepIndex + 1) / steps.length) * 100;
 
   useEffect(() => {
-    setStepIndex(0);
-    setIsPlaying(false);
+    playback.setStepIndex(0);
   }, [topicId]);
-
-  useEffect(() => {
-    if (!isPlaying) return;
-
-    const timer = window.setInterval(() => {
-      setStepIndex((current) => {
-        if (current >= steps.length - 1) {
-          setIsPlaying(false);
-          return current;
-        }
-        return current + 1;
-      });
-    }, speed);
-
-    return () => window.clearInterval(timer);
-  }, [isPlaying, speed, steps.length]);
-
-  const goToStep = (nextIndex: number) => {
-    setIsPlaying(false);
-    setStepIndex(clamp(nextIndex, 0, steps.length - 1));
-  };
 
   return (
     <main className="app-shell">
@@ -102,7 +77,7 @@ function App() {
               <h2>{currentStep.title}</h2>
             </div>
             <span className="step-pill">
-              Step {stepIndex + 1} of {steps.length}
+              Step {playback.stepIndex + 1} of {steps.length}
             </span>
           </div>
 
@@ -113,15 +88,15 @@ function App() {
           </div>
 
           <ControlDeck
-            isPlaying={isPlaying}
-            speed={speed}
-            canGoBack={stepIndex > 0}
-            canGoForward={stepIndex < steps.length - 1}
-            onPlayPause={() => setIsPlaying((playing) => !playing)}
-            onPrevious={() => goToStep(stepIndex - 1)}
-            onNext={() => goToStep(stepIndex + 1)}
-            onReset={() => goToStep(0)}
-            onSpeedChange={setSpeed}
+            isPlaying={playback.isPlaying}
+            speed={playback.speed}
+            canGoBack={playback.stepIndex > 0}
+            canGoForward={playback.stepIndex < steps.length - 1}
+            onPlayPause={playback.togglePlay}
+            onPrevious={playback.previous}
+            onNext={playback.next}
+            onReset={playback.reset}
+            onSpeedChange={playback.setSpeed}
           />
         </section>
 
