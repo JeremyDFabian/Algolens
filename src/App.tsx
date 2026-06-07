@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
-import { TopicId, topics, visualizerMeta } from './visualizers';
+import { MotionConfig } from 'framer-motion';
+import { TopicId, sumCost, topics, visualizerMeta } from './visualizers';
 import { useTheme } from './theme';
 import { ThemeToggle } from './components/ThemeToggle';
+import { CostMeter } from './components/CostMeter';
 import { VisualizerStage } from './components/stages/VisualizerStage';
 import { usePlayback } from './hooks/usePlayback';
 import './styles.css';
@@ -25,12 +27,14 @@ function App() {
   const playback = usePlayback(steps.length);
   const currentStep = steps[playback.stepIndex];
   const progress = ((playback.stepIndex + 1) / steps.length) * 100;
+  const counts = useMemo(() => sumCost(steps, playback.stepIndex), [steps, playback.stepIndex]);
 
   useEffect(() => {
     playback.setStepIndex(0);
   }, [topicId]);
 
   return (
+    <MotionConfig reducedMotion="user">
     <main className="app-shell">
       <header className="topbar">
         <div>
@@ -95,6 +99,7 @@ function App() {
         </section>
 
         <aside className="learning-panel" aria-label="Learning details">
+          <CostMeter counts={counts} model={meta.costModel} />
           <section className="explain-block">
             <p className="eyebrow">What changed</p>
             <h2>{currentStep.operation}</h2>
@@ -128,6 +133,7 @@ function App() {
         </aside>
       </section>
     </main>
+    </MotionConfig>
   );
 }
 

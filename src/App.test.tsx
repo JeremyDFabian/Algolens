@@ -37,4 +37,11 @@ describe('App', () => {
     fireEvent.click(toggle);
     expect(document.documentElement).toHaveAttribute('data-theme', 'dark');
   });
+
+  test('shows the cost meter for the active topic', () => {
+    render(<App />);
+    fireEvent.click(screen.getByRole('button', { name: /Bubble Sort/i }));
+    fireEvent.click(screen.getByRole('button', { name: /Next step/i }));
+    expect(screen.getByLabelText(/Operation cost/i)).toBeInTheDocument();
+  });
 });
