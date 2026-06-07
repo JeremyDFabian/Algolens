@@ -1,22 +1,51 @@
 :root {
-  color: oklch(23% 0.025 245);
-  background: oklch(97% 0.011 235);
   font-family:
     Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
-  --paper: oklch(99% 0.006 230);
-  --surface: oklch(94% 0.018 230);
-  --line: oklch(82% 0.026 230);
-  --ink: oklch(22% 0.025 245);
-  --muted: oklch(48% 0.028 245);
-  --blue: oklch(57% 0.16 245);
-  --teal: oklch(63% 0.135 176);
+}
+
+:root[data-theme='light'] {
+  --ink: oklch(24% 0.012 255);
+  --muted: oklch(52% 0.014 255);
+  --line: oklch(91% 0.005 255);
+  --paper: oklch(99.5% 0.0015 255);
+  --surface: oklch(98.5% 0.002 255);
+  --well: oklch(97% 0.003 255);
+  --well-shadow: inset 0 1px 3px oklch(30% 0.03 255 / 0.08), inset 0 0 0 1px oklch(92% 0.004 255);
+  --chip: oklch(100% 0 0);
+  --chip-line: oklch(90% 0.005 255);
+  --accent: oklch(55% 0.16 256);
+  --accent-soft: oklch(55% 0.16 256 / 0.09);
+  --blue: var(--accent);
   --amber: oklch(77% 0.145 78);
   --red: oklch(63% 0.17 25);
   --green: oklch(61% 0.14 145);
-  --shadow: 0 20px 50px oklch(30% 0.04 245 / 0.12);
+  --shadow: 0 20px 50px oklch(30% 0.04 255 / 0.12);
+  color: var(--ink);
+  background: oklch(98% 0.003 255);
+}
+
+:root[data-theme='dark'] {
+  --ink: oklch(95% 0.004 260);
+  --muted: oklch(64% 0.012 260);
+  --line: oklch(32% 0.012 260);
+  --paper: oklch(22% 0.012 260);
+  --surface: oklch(23% 0.012 260);
+  --well: oklch(15.5% 0.011 260);
+  --well-shadow: inset 0 2px 6px oklch(0% 0 0 / 0.5), inset 0 0 0 1px oklch(28% 0.012 260);
+  --chip: oklch(28% 0.013 260);
+  --chip-line: oklch(36% 0.013 260);
+  --accent: oklch(72% 0.14 256);
+  --accent-soft: oklch(72% 0.14 256 / 0.16);
+  --blue: var(--accent);
+  --amber: oklch(80% 0.13 78);
+  --red: oklch(70% 0.15 25);
+  --green: oklch(72% 0.13 145);
+  --shadow: 0 24px 60px oklch(0% 0 0 / 0.5);
+  color: var(--ink);
+  background: oklch(17% 0.012 260);
 }
 
 * {
@@ -181,13 +210,9 @@ button:disabled {
   place-items: center;
   min-height: 360px;
   overflow: hidden;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background:
-    linear-gradient(90deg, oklch(91% 0.012 235) 1px, transparent 1px),
-    linear-gradient(0deg, oklch(91% 0.012 235) 1px, transparent 1px),
-    oklch(97% 0.01 235);
-  background-size: 28px 28px;
+  border-radius: 14px;
+  background: var(--well);
+  box-shadow: var(--well-shadow);
 }
 
 .array-row,
