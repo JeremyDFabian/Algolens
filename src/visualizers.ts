@@ -451,6 +451,12 @@ export const createInsertionSortSteps = (input = [9, 3, 7, 1]): VisualStep[] => 
   return steps;
 };
 
+export const activeIndices = (step: VisualStep): number[] =>
+  step.items
+    .map((item, index) => ({ index, state: item.state }))
+    .filter(({ state }) => state === 'active' || state === 'compare' || state === 'swap')
+    .map(({ index }) => index);
+
 export const sumCost = (steps: VisualStep[], upToIndex: number): Required<StepCost> => {
   const total = { comparisons: 0, swaps: 0, reads: 0, writes: 0 };
   for (let i = 0; i <= upToIndex && i < steps.length; i += 1) {

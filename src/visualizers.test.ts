@@ -10,6 +10,7 @@ import {
 } from './visualizers';
 import { sumCost } from './visualizers';
 import { visualizerMeta } from './visualizers';
+import { activeIndices } from './visualizers';
 
 describe('visualizer step generators', () => {
   test('stack steps expose push and pop states with pseudocode focus', () => {
@@ -117,5 +118,18 @@ describe('cost models', () => {
     const model = visualizerMeta.array.costModel;
     expect(model.boundLabel).toBe('O(1)');
     expect(model.bound(99)).toBe(1);
+  });
+});
+
+describe('activeIndices', () => {
+  test('a compare step frames exactly the two compared cells', () => {
+    const steps = createBubbleSortSteps([5, 1, 4, 2]);
+    const compareStep = steps.find((s) => s.operation === 'compare')!;
+    expect(activeIndices(compareStep)).toEqual([0, 1]);
+  });
+
+  test('returns an empty array for a step with no active cells', () => {
+    const steps = createBubbleSortSteps([5, 1, 4, 2]);
+    expect(activeIndices(steps[0])).toEqual([]);
   });
 });
