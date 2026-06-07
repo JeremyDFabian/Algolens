@@ -8,6 +8,7 @@ import {
   createStackSteps,
   createTreeInsertSteps
 } from './visualizers';
+import { sumCost } from './visualizers';
 
 describe('visualizer step generators', () => {
   test('stack steps expose push and pop states with pseudocode focus', () => {
@@ -74,5 +75,31 @@ describe('visualizer step generators', () => {
 
     expect(finalStep?.items.map((item) => item.value)).toEqual([1, 3, 7, 9]);
     expect(finalStep?.activeLine).toBe(6);
+  });
+});
+
+describe('cost deltas', () => {
+  test('bubble sort of [5,1,4,2] totals 6 comparisons and 4 swaps', () => {
+    const steps = createBubbleSortSteps([5, 1, 4, 2]);
+    const total = sumCost(steps, steps.length - 1);
+    expect(total.comparisons).toBe(6);
+    expect(total.swaps).toBe(4);
+  });
+
+  test('insertion sort of [9,3,7,1] totals 6 comparisons and 0 swaps', () => {
+    const steps = createInsertionSortSteps([9, 3, 7, 1]);
+    const total = sumCost(steps, steps.length - 1);
+    expect(total.comparisons).toBe(6);
+    expect(total.swaps).toBe(0);
+  });
+
+  test('sumCost is monotonic non-decreasing as the index grows', () => {
+    const steps = createBubbleSortSteps([5, 1, 4, 2]);
+    let prev = 0;
+    for (let i = 0; i < steps.length; i += 1) {
+      const c = sumCost(steps, i).comparisons;
+      expect(c).toBeGreaterThanOrEqual(prev);
+      prev = c;
+    }
   });
 });

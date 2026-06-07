@@ -1,5 +1,12 @@
 export type ItemState = 'idle' | 'active' | 'compare' | 'swap' | 'complete' | 'muted';
 
+export type StepCost = {
+  comparisons?: number;
+  swaps?: number;
+  reads?: number;
+  writes?: number;
+};
+
 export type VisualItem = {
   id: string;
   value: number;
@@ -23,6 +30,7 @@ export type VisualStep = {
   pointers?: Record<string, number | null>;
   links?: Array<[number, number]>;
   tree?: TreeNode[];
+  cost?: StepCost;
 };
 
 const item = (value: number, index: number, state: ItemState = 'idle'): VisualItem => ({
@@ -322,7 +330,8 @@ export const createBubbleSortSteps = (input = [5, 1, 4, 2]): VisualStep[] => {
         operation: 'compare',
         explanation: `Compare ${values[index]} with ${values[index + 1]}.`,
         activeLine: 2,
-        items: items(values, { [index]: 'compare', [index + 1]: 'compare' })
+        items: items(values, { [index]: 'compare', [index + 1]: 'compare' }),
+        cost: { comparisons: 1 }
       });
 
       if (values[index] > values[index + 1]) {
@@ -332,7 +341,8 @@ export const createBubbleSortSteps = (input = [5, 1, 4, 2]): VisualStep[] => {
           operation: 'swap',
           explanation: 'The left value is larger, so the pair swaps positions.',
           activeLine: 3,
-          items: items(values, { [index]: 'swap', [index + 1]: 'swap' })
+          items: items(values, { [index]: 'swap', [index + 1]: 'swap' }),
+          cost: { swaps: 1, writes: 2 }
         });
       }
     }
@@ -378,7 +388,8 @@ export const createInsertionSortSteps = (input = [9, 3, 7, 1]): VisualStep[] => 
       operation: 'pick',
       explanation: `${key} is the next value to insert into the sorted prefix.`,
       activeLine: 2,
-      items: items(values, { [index]: 'active' })
+      items: items(values, { [index]: 'active' }),
+      cost: { reads: 1 }
     });
 
     while (scan >= 0 && values[scan] > key) {
@@ -388,7 +399,8 @@ export const createInsertionSortSteps = (input = [9, 3, 7, 1]): VisualStep[] => 
         operation: 'shift',
         explanation: `${values[scan]} is larger than ${key}, so it shifts one position right.`,
         activeLine: 3,
-        items: items(values, { [scan]: 'compare', [scan + 1]: 'swap' })
+        items: items(values, { [scan]: 'compare', [scan + 1]: 'swap' }),
+        cost: { comparisons: 1, writes: 1 }
       });
       scan -= 1;
     }
@@ -399,7 +411,8 @@ export const createInsertionSortSteps = (input = [9, 3, 7, 1]): VisualStep[] => 
       operation: 'insert',
       explanation: `${key} lands after all smaller values in the sorted prefix.`,
       activeLine: 4,
-      items: items(values, { [scan + 1]: 'active' })
+      items: items(values, { [scan + 1]: 'active' }),
+      cost: { comparisons: scan >= 0 ? 1 : 0, writes: 1 }
     });
 
     steps.push({
@@ -420,6 +433,19 @@ export const createInsertionSortSteps = (input = [9, 3, 7, 1]): VisualStep[] => 
   });
 
   return steps;
+};
+
+export const sumCost = (steps: VisualStep[], upToIndex: number): Required<StepCost> => {
+  const total = { comparisons: 0, swaps: 0, reads: 0, writes: 0 };
+  for (let i = 0; i <= upToIndex && i < steps.length; i += 1) {
+    const c = steps[i].cost;
+    if (!c) continue;
+    total.comparisons += c.comparisons ?? 0;
+    total.swaps += c.swaps ?? 0;
+    total.reads += c.reads ?? 0;
+    total.writes += c.writes ?? 0;
+  }
+  return total;
 };
 
 export const topics: Array<{
