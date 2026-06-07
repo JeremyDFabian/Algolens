@@ -9,6 +9,7 @@ import {
   createTreeInsertSteps
 } from './visualizers';
 import { sumCost } from './visualizers';
+import { visualizerMeta } from './visualizers';
 
 describe('visualizer step generators', () => {
   test('stack steps expose push and pop states with pseudocode focus', () => {
@@ -101,5 +102,20 @@ describe('cost deltas', () => {
       expect(c).toBeGreaterThanOrEqual(prev);
       prev = c;
     }
+  });
+});
+
+describe('cost models', () => {
+  test('bubble sort bound is n(n-1)/2 with an O(n^2) label', () => {
+    const model = visualizerMeta.bubbleSort.costModel;
+    expect(model.headline).toBe('comparisons');
+    expect(model.boundLabel).toBe('O(n²)');
+    expect(model.bound(4)).toBe(6);
+  });
+
+  test('array read is a constant-cost model', () => {
+    const model = visualizerMeta.array.costModel;
+    expect(model.boundLabel).toBe('O(1)');
+    expect(model.bound(99)).toBe(1);
   });
 });

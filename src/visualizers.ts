@@ -7,6 +7,15 @@ export type StepCost = {
   writes?: number;
 };
 
+export type CostMetric = 'comparisons' | 'swaps' | 'reads' | 'writes';
+
+export type CostModel = {
+  headline: CostMetric;
+  bound: (n: number) => number;
+  boundLabel: string;
+  n: number;
+};
+
 export type VisualItem = {
   id: string;
   value: number;
@@ -47,43 +56,50 @@ export const visualizerMeta = {
     label: 'Array',
     operation: 'Read by index',
     complexity: 'O(1) time, O(1) space',
-    pseudocode: ['values = [4, 9, 2, 8, 6]', 'index = 3', 'return values[index]']
+    pseudocode: ['values = [4, 9, 2, 8, 6]', 'index = 3', 'return values[index]'],
+    costModel: { headline: 'reads' as CostMetric, bound: () => 1, boundLabel: 'O(1)', n: 5 }
   },
   stack: {
     label: 'Stack',
     operation: 'Push and pop',
     complexity: 'O(1) push, O(1) pop',
-    pseudocode: ['stack.push(12)', 'stack.push(7)', 'stack.push(28)', 'stack.pop()']
+    pseudocode: ['stack.push(12)', 'stack.push(7)', 'stack.push(28)', 'stack.pop()'],
+    costModel: { headline: 'writes' as CostMetric, bound: () => 1, boundLabel: 'O(1)', n: 3 }
   },
   queue: {
     label: 'Queue',
     operation: 'Enqueue and dequeue',
     complexity: 'O(1) enqueue, O(1) dequeue',
-    pseudocode: ['queue.enqueue(5)', 'queue.enqueue(18)', 'queue.enqueue(31)', 'queue.dequeue()']
+    pseudocode: ['queue.enqueue(5)', 'queue.enqueue(18)', 'queue.enqueue(31)', 'queue.dequeue()'],
+    costModel: { headline: 'writes' as CostMetric, bound: () => 1, boundLabel: 'O(1)', n: 3 }
   },
   linkedList: {
     label: 'Linked List',
     operation: 'Insert in middle',
     complexity: 'O(n) search, O(1) relink',
-    pseudocode: ['prev = node(11)', 'new.next = prev.next', 'prev.next = new', 'list = 11 -> 24 -> 37 -> 50']
+    pseudocode: ['prev = node(11)', 'new.next = prev.next', 'prev.next = new', 'list = 11 -> 24 -> 37 -> 50'],
+    costModel: { headline: 'reads' as CostMetric, bound: (n: number) => n, boundLabel: 'O(n)', n: 3 }
   },
   tree: {
     label: 'Binary Tree',
     operation: 'BST insert',
     complexity: 'O(log n) average, O(n) worst',
-    pseudocode: ['if value < node.value, go left', 'if value > node.value, go right', 'insert at empty child']
+    pseudocode: ['if value < node.value, go left', 'if value > node.value, go right', 'insert at empty child'],
+    costModel: { headline: 'comparisons' as CostMetric, bound: (n: number) => Math.ceil(Math.log2(n + 1)), boundLabel: 'O(log n)', n: 4 }
   },
   bubbleSort: {
     label: 'Bubble Sort',
     operation: 'Compare adjacent values',
     complexity: 'O(n^2) time, O(1) space',
-    pseudocode: ['for end from n-1 down to 1', 'compare a[i] and a[i+1]', 'if left > right, swap', 'mark end sorted']
+    pseudocode: ['for end from n-1 down to 1', 'compare a[i] and a[i+1]', 'if left > right, swap', 'mark end sorted'],
+    costModel: { headline: 'comparisons' as CostMetric, bound: (n: number) => (n * (n - 1)) / 2, boundLabel: 'O(n²)', n: 4 }
   },
   insertionSort: {
     label: 'Insertion Sort',
     operation: 'Insert into sorted prefix',
     complexity: 'O(n^2) time, O(1) space',
-    pseudocode: ['for i from 1 to n-1', 'key = a[i]', 'shift larger values right', 'place key', 'grow sorted prefix', 'array sorted']
+    pseudocode: ['for i from 1 to n-1', 'key = a[i]', 'shift larger values right', 'place key', 'grow sorted prefix', 'array sorted'],
+    costModel: { headline: 'comparisons' as CostMetric, bound: (n: number) => (n * (n - 1)) / 2, boundLabel: 'O(n²)', n: 4 }
   }
 } as const;
 
