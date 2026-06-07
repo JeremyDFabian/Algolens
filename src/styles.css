@@ -688,3 +688,22 @@ button:disabled {
 .cost-breakdown div { display: flex; justify-content: space-between; font-size: 0.82rem; }
 .cost-breakdown dt { color: var(--muted); }
 .cost-breakdown dd { margin: 0; font-variant-numeric: tabular-nums; }
+
+.playhead {
+  position: absolute;
+  inset: -6px;
+  border-radius: 18px;
+  border: 1.5px solid var(--accent);
+  background: var(--accent-soft);
+  box-shadow: 0 0 0 5px var(--accent-soft);
+  pointer-events: none;
+  z-index: 0;
+}
+.value-cell > span,
+.value-cell > small,
+.stack-cell > span,
+.node-cell > span,
+.node-cell > small {
+  position: relative;
+  z-index: 1;
+}

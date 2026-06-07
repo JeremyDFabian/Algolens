@@ -42,14 +42,14 @@ export type VisualStep = {
   cost?: StepCost;
 };
 
-const item = (value: number, index: number, state: ItemState = 'idle'): VisualItem => ({
-  id: `${value}-${index}`,
+const item = (value: number, state: ItemState = 'idle'): VisualItem => ({
+  id: `${value}`,
   value,
   state
 });
 
 const items = (values: number[], states: Record<number, ItemState> = {}): VisualItem[] =>
-  values.map((value, index) => item(value, index, states[index] ?? 'idle'));
+  values.map((value, index) => item(value, states[index] ?? 'idle'));
 
 export const visualizerMeta = {
   array: {

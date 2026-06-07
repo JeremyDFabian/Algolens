@@ -1,14 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
-import {
-  TopicId,
-  TreeNode,
-  VisualItem,
-  VisualStep,
-  topics,
-  visualizerMeta
-} from './visualizers';
+import { TopicId, topics, visualizerMeta } from './visualizers';
 import { useTheme } from './theme';
 import { ThemeToggle } from './components/ThemeToggle';
+import { VisualizerStage } from './components/stages/VisualizerStage';
 import { usePlayback } from './hooks/usePlayback';
 import './styles.css';
 
@@ -188,124 +182,6 @@ function ControlDeck({
           onChange={(event) => onSpeedChange(Number(event.target.value))}
         />
       </label>
-    </div>
-  );
-}
-
-function VisualizerStage({ step, topicId }: { step: VisualStep; topicId: TopicId }) {
-  if (step.tree) {
-    return <TreeStage nodes={step.tree} />;
-  }
-
-  if (topicId === 'linkedList') {
-    return <LinkedListStage items={step.items} links={step.links ?? []} />;
-  }
-
-  if (topicId === 'stack') {
-    return <StackStage items={step.items} pointers={step.pointers} />;
-  }
-
-  return <ArrayStage items={step.items} pointers={step.pointers} topicId={topicId} />;
-}
-
-function ArrayStage({
-  items,
-  pointers,
-  topicId
-}: {
-  items: VisualItem[];
-  pointers?: Record<string, number | null>;
-  topicId: TopicId;
-}) {
-  const isQueue = topicId === 'queue';
-
-  return (
-    <div className={`visual-stage ${isQueue ? 'queue-mode' : ''}`}>
-      <div className="array-row">
-        {items.length === 0 ? <p className="empty-note">Structure is empty</p> : null}
-        {items.map((visualItem, index) => (
-          <div key={visualItem.id} className={`value-cell ${visualItem.state ?? 'idle'}`}>
-            <span>{visualItem.value}</span>
-            <small>{index}</small>
-            {Object.entries(pointers ?? {}).map(([name, pointerIndex]) =>
-              pointerIndex === index ? (
-                <em key={name} className="pointer-tag">
-                  {name}
-                </em>
-              ) : null
-            )}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function StackStage({ items, pointers }: { items: VisualItem[]; pointers?: Record<string, number | null> }) {
-  return (
-    <div className="visual-stage stack-mode">
-      <div className="stack-column">
-        {items.length === 0 ? <p className="empty-note">Stack is empty</p> : null}
-        {[...items].reverse().map((visualItem, reverseIndex) => {
-          const originalIndex = items.length - reverseIndex - 1;
-          return (
-            <div key={visualItem.id} className={`stack-cell ${visualItem.state ?? 'idle'}`}>
-              <span>{visualItem.value}</span>
-              {pointers?.top === originalIndex ? <em className="pointer-tag">top</em> : null}
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-function LinkedListStage({ items, links }: { items: VisualItem[]; links: Array<[number, number]> }) {
-  const linkedTargets = new Map(links.map(([from, to]) => [from, to]));
-
-  return (
-    <div className="visual-stage list-mode">
-      <div className="list-row">
-        {items.map((visualItem, index) => (
-          <div className="list-pair" key={visualItem.id}>
-            <div className={`node-cell ${visualItem.state ?? 'idle'}`}>
-              <span>{visualItem.value}</span>
-              <small>next</small>
-            </div>
-            {linkedTargets.has(index) ? <span className="link-arrow">→</span> : null}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function TreeStage({ nodes }: { nodes: TreeNode[] }) {
-  const root = nodes.find((node) => node.parentId === null);
-  const left = nodes.find((node) => node.parentId === root?.id && node.side === 'left');
-  const right = nodes.find((node) => node.parentId === root?.id && node.side === 'right');
-  const leftRight = nodes.find((node) => node.parentId === left?.id && node.side === 'right');
-
-  return (
-    <div className="visual-stage tree-mode">
-      <div className="tree-grid">
-        <TreeBubble node={root} className="root" />
-        <TreeBubble node={left} className="left" />
-        <TreeBubble node={right} className="right" />
-        <TreeBubble node={leftRight} className="left-right" />
-      </div>
-    </div>
-  );
-}
-
-function TreeBubble({ node, className }: { node?: TreeNode; className: string }) {
-  if (!node) {
-    return <div className={`tree-bubble ghost ${className}`} />;
-  }
-
-  return (
-    <div className={`tree-bubble ${node.state ?? 'idle'} ${className}`}>
-      <span>{node.value}</span>
     </div>
   );
 }
