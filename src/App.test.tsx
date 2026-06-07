@@ -1,9 +1,14 @@
 import '@testing-library/jest-dom/vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
-import { describe, expect, test } from 'vitest';
+import { afterEach, describe, expect, test } from 'vitest';
 import App from './App';
 
 describe('App', () => {
+  afterEach(() => {
+    localStorage.clear();
+    document.documentElement.removeAttribute('data-theme');
+  });
+
   test('renders the lab with topic navigation and synchronized learning panels', () => {
     render(<App />);
 
@@ -24,5 +29,12 @@ describe('App', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /Reset/i }));
     expect(screen.getByText(/Start bubble sort/i)).toBeInTheDocument();
+  });
+
+  test('toggles the color theme from the top bar', () => {
+    render(<App />);
+    const toggle = screen.getByRole('button', { name: /theme/i });
+    fireEvent.click(toggle);
+    expect(document.documentElement).toHaveAttribute('data-theme', 'dark');
   });
 });

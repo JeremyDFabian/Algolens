@@ -7,6 +7,8 @@ import {
   topics,
   visualizerMeta
 } from './visualizers';
+import { useTheme } from './theme';
+import { ThemeToggle } from './components/ThemeToggle';
 import './styles.css';
 
 const stateLabels: Record<string, string> = {
@@ -21,6 +23,7 @@ const stateLabels: Record<string, string> = {
 const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
 
 function App() {
+  const { theme, toggle } = useTheme();
   const [topicId, setTopicId] = useState<TopicId>('stack');
   const [stepIndex, setStepIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -65,9 +68,12 @@ function App() {
           <p className="eyebrow">College CS lab</p>
           <h1>DSA Visualizer Lab</h1>
         </div>
-        <div className="status-strip" aria-label="Current topic summary">
-          <span>{meta.operation}</span>
-          <strong>{topics.length} visual labs</strong>
+        <div className="topbar-right">
+          <div className="status-strip" aria-label="Current topic summary">
+            <span>{meta.operation}</span>
+            <strong>{topics.length} visual labs</strong>
+          </div>
+          <ThemeToggle theme={theme} onToggle={toggle} />
         </div>
       </header>
 
