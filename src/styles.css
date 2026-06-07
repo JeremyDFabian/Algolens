@@ -170,8 +170,8 @@ button:disabled {
 
 .topic-button.active,
 .topic-button:hover {
-  border-color: oklch(72% 0.09 245);
-  background: oklch(94% 0.035 245);
+  border-color: var(--accent);
+  background: var(--accent-soft);
 }
 
 .stage-column {
@@ -547,7 +547,7 @@ button:disabled {
 }
 
 .code-block .active-line {
-  background: oklch(93% 0.055 78);
+  background: var(--accent-soft);
   color: var(--ink);
 }
 
