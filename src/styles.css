@@ -675,3 +675,16 @@ button:disabled {
 .theme-toggle:hover {
   border-color: var(--accent);
 }
+
+.cost-meter { display: grid; gap: 10px; }
+.cost-headline { margin: 0; font-variant-numeric: tabular-nums; }
+.cost-headline strong { font-size: 2.4rem; font-weight: 800; letter-spacing: -0.03em; }
+.cost-headline span { color: var(--muted); font-weight: 700; }
+.cost-bar { height: 6px; border-radius: 999px; background: var(--surface); overflow: hidden; }
+.cost-bar span { display: block; height: 100%; background: var(--accent); transition: width 280ms cubic-bezier(0.65, 0, 0.35, 1); }
+.cost-pred { margin: 0; color: var(--muted); font-size: 0.78rem; }
+.cost-pred b { color: var(--ink); }
+.cost-breakdown { display: grid; gap: 6px; margin: 4px 0 0; }
+.cost-breakdown div { display: flex; justify-content: space-between; font-size: 0.82rem; }
+.cost-breakdown dt { color: var(--muted); }
+.cost-breakdown dd { margin: 0; font-variant-numeric: tabular-nums; }
