@@ -6,6 +6,8 @@
   -webkit-font-smoothing: antialiased;
 }
 
+/* Light tokens double as the fallback when data-theme is absent. */
+:root,
 :root[data-theme='light'] {
   --ink: oklch(24% 0.012 255);
   --muted: oklch(52% 0.014 255);
