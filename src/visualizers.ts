@@ -42,14 +42,20 @@ export type VisualStep = {
   cost?: StepCost;
 };
 
-const item = (value: number, state: ItemState = 'idle'): VisualItem => ({
-  id: `${value}`,
-  value,
-  state
-});
-
-const items = (values: number[], states: Record<number, ItemState> = {}): VisualItem[] =>
-  values.map((value, index) => item(value, states[index] ?? 'idle'));
+const items = (values: number[], states: Record<number, ItemState> = {}): VisualItem[] => {
+  const seen = new Map<number, number>();
+  return values.map((value, index) => {
+    // Ids are value-based so motion can track a value across steps; repeats get
+    // an occurrence suffix so duplicate values still produce unique React keys.
+    const occurrence = seen.get(value) ?? 0;
+    seen.set(value, occurrence + 1);
+    return {
+      id: occurrence === 0 ? `${value}` : `${value}.${occurrence}`,
+      value,
+      state: states[index] ?? 'idle'
+    };
+  });
+};
 
 export const visualizerMeta = {
   array: {
