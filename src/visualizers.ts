@@ -70,14 +70,16 @@ export const visualizerMeta = {
     operation: 'Push and pop',
     complexity: 'O(1) push, O(1) pop',
     pseudocode: ['stack.push(12)', 'stack.push(7)', 'stack.push(28)', 'stack.pop()'],
-    costModel: { headline: 'writes' as CostMetric, bound: () => 1, boundLabel: 'O(1)', n: 3 }
+    // 3 pushes + 1 pop, each an O(1) write → ~4 writes for the whole demo.
+    costModel: { headline: 'writes' as CostMetric, bound: () => 4, boundLabel: 'O(1)', n: 3 }
   },
   queue: {
     label: 'Queue',
     operation: 'Enqueue and dequeue',
     complexity: 'O(1) enqueue, O(1) dequeue',
     pseudocode: ['queue.enqueue(5)', 'queue.enqueue(18)', 'queue.enqueue(31)', 'queue.dequeue()'],
-    costModel: { headline: 'writes' as CostMetric, bound: () => 1, boundLabel: 'O(1)', n: 3 }
+    // 3 enqueues + 1 dequeue, each an O(1) write → ~4 writes for the whole demo.
+    costModel: { headline: 'writes' as CostMetric, bound: () => 4, boundLabel: 'O(1)', n: 3 }
   },
   linkedList: {
     label: 'Linked List',
@@ -134,7 +136,8 @@ export const createArrayAccessSteps = (): VisualStep[] => [
     explanation: 'No scanning is needed. The array returns the value stored at index 3.',
     activeLine: 3,
     items: items([4, 9, 2, 8, 6], { 3: 'active' }),
-    pointers: { index: 3 }
+    pointers: { index: 3 },
+    cost: { reads: 1 }
   }
 ];
 
@@ -153,7 +156,8 @@ export const createStackSteps = (): VisualStep[] => [
     explanation: 'The first pushed value becomes the bottom and the top at the same time.',
     activeLine: 1,
     items: items([12], { 0: 'active' }),
-    pointers: { top: 0 }
+    pointers: { top: 0 },
+    cost: { writes: 1 }
   },
   {
     title: 'Push 7',
@@ -161,7 +165,8 @@ export const createStackSteps = (): VisualStep[] => [
     explanation: 'A new value is placed above the old top.',
     activeLine: 2,
     items: items([12, 7], { 1: 'active' }),
-    pointers: { top: 1 }
+    pointers: { top: 1 },
+    cost: { writes: 1 }
   },
   {
     title: 'Push 28',
@@ -169,7 +174,8 @@ export const createStackSteps = (): VisualStep[] => [
     explanation: 'The most recent push is always easiest to remove.',
     activeLine: 3,
     items: items([12, 7, 28], { 2: 'active' }),
-    pointers: { top: 2 }
+    pointers: { top: 2 },
+    cost: { writes: 1 }
   },
   {
     title: 'Pop the top',
@@ -177,7 +183,8 @@ export const createStackSteps = (): VisualStep[] => [
     explanation: 'Pop removes 28 first because stacks are last-in, first-out.',
     activeLine: 3,
     items: items([12, 7], { 1: 'active' }),
-    pointers: { top: 1 }
+    pointers: { top: 1 },
+    cost: { writes: 1 }
   }
 ];
 
@@ -196,7 +203,8 @@ export const createQueueSteps = (): VisualStep[] => [
     explanation: 'The first value is both the front and the rear.',
     activeLine: 1,
     items: items([5], { 0: 'active' }),
-    pointers: { front: 0, rear: 0 }
+    pointers: { front: 0, rear: 0 },
+    cost: { writes: 1 }
   },
   {
     title: 'Enqueue 18',
@@ -204,7 +212,8 @@ export const createQueueSteps = (): VisualStep[] => [
     explanation: 'New values join behind the current rear.',
     activeLine: 2,
     items: items([5, 18], { 1: 'active' }),
-    pointers: { front: 0, rear: 1 }
+    pointers: { front: 0, rear: 1 },
+    cost: { writes: 1 }
   },
   {
     title: 'Enqueue 31',
@@ -212,7 +221,8 @@ export const createQueueSteps = (): VisualStep[] => [
     explanation: 'The rear pointer follows the newest value.',
     activeLine: 3,
     items: items([5, 18, 31], { 2: 'active' }),
-    pointers: { front: 0, rear: 2 }
+    pointers: { front: 0, rear: 2 },
+    cost: { writes: 1 }
   },
   {
     title: 'Dequeue front',
@@ -220,7 +230,8 @@ export const createQueueSteps = (): VisualStep[] => [
     explanation: 'Dequeue removes 5 first because queues are first-in, first-out.',
     activeLine: 4,
     items: items([18, 31], { 0: 'active' }),
-    pointers: { front: 0, rear: 1 }
+    pointers: { front: 0, rear: 1 },
+    cost: { writes: 1 }
   }
 ];
 
@@ -234,7 +245,8 @@ export const createLinkedListInsertSteps = (): VisualStep[] => [
     links: [
       [0, 1],
       [1, 2]
-    ]
+    ],
+    cost: { reads: 1 }
   },
   {
     title: 'Point new node forward',
@@ -246,7 +258,8 @@ export const createLinkedListInsertSteps = (): VisualStep[] => [
       [0, 2],
       [1, 2],
       [2, 3]
-    ]
+    ],
+    cost: { reads: 1, writes: 1 }
   },
   {
     title: 'Point previous node to new node',
@@ -258,7 +271,8 @@ export const createLinkedListInsertSteps = (): VisualStep[] => [
       [0, 1],
       [1, 2],
       [2, 3]
-    ]
+    ],
+    cost: { writes: 1 }
   },
   {
     title: 'Insertion complete',
@@ -281,7 +295,8 @@ export const createTreeInsertSteps = (): VisualStep[] => [
     explanation: 'Binary search tree insertion compares the new value against the current node.',
     activeLine: 1,
     items: [],
-    tree: [{ id: 'n40', value: 40, parentId: null, state: 'active' }]
+    tree: [{ id: 'n40', value: 40, parentId: null, state: 'active' }],
+    cost: { comparisons: 1 }
   },
   {
     title: 'Insert smaller value left',
@@ -292,7 +307,8 @@ export const createTreeInsertSteps = (): VisualStep[] => [
     tree: [
       { id: 'n40', value: 40, parentId: null },
       { id: 'n25', value: 25, parentId: 'n40', side: 'left', state: 'active' }
-    ]
+    ],
+    cost: { writes: 1 }
   },
   {
     title: 'Insert larger value right',
@@ -304,7 +320,8 @@ export const createTreeInsertSteps = (): VisualStep[] => [
       { id: 'n40', value: 40, parentId: null },
       { id: 'n25', value: 25, parentId: 'n40', side: 'left' },
       { id: 'n60', value: 60, parentId: 'n40', side: 'right', state: 'active' }
-    ]
+    ],
+    cost: { writes: 1 }
   },
   {
     title: 'Walk into the left subtree',
@@ -316,7 +333,8 @@ export const createTreeInsertSteps = (): VisualStep[] => [
       { id: 'n40', value: 40, parentId: null },
       { id: 'n25', value: 25, parentId: 'n40', side: 'left', state: 'compare' },
       { id: 'n60', value: 60, parentId: 'n40', side: 'right' }
-    ]
+    ],
+    cost: { comparisons: 2 }
   },
   {
     title: 'Insert 35',
@@ -329,7 +347,8 @@ export const createTreeInsertSteps = (): VisualStep[] => [
       { id: 'n25', value: 25, parentId: 'n40', side: 'left' },
       { id: 'n60', value: 60, parentId: 'n40', side: 'right' },
       { id: 'n35', value: 35, parentId: 'n25', side: 'right', state: 'active' }
-    ]
+    ],
+    cost: { writes: 1 }
   }
 ];
 
