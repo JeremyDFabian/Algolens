@@ -1,11 +1,6 @@
 import { act, renderHook } from '@testing-library/react';
-import { afterEach, describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vitest';
 import { useTheme } from './theme';
-
-afterEach(() => {
-  localStorage.clear();
-  document.documentElement.removeAttribute('data-theme');
-});
 
 describe('useTheme', () => {
   test('defaults to light when no preference is saved', () => {

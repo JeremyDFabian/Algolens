@@ -1,16 +1,16 @@
 import { describe, expect, test } from 'vitest';
 import {
+  activeIndices,
   createArrayAccessSteps,
   createBubbleSortSteps,
   createInsertionSortSteps,
   createLinkedListInsertSteps,
   createQueueSteps,
   createStackSteps,
-  createTreeInsertSteps
+  createTreeInsertSteps,
+  sumCost,
+  visualizerMeta
 } from './visualizers';
-import { sumCost } from './visualizers';
-import { visualizerMeta } from './visualizers';
-import { activeIndices } from './visualizers';
 
 describe('visualizer step generators', () => {
   test('stack steps expose push and pop states with pseudocode focus', () => {
