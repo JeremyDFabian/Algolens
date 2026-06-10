@@ -31,7 +31,6 @@ export function usePlayback(stepCount: number) {
     isPlaying,
     speed,
     setSpeed,
-    setStepIndex,
     togglePlay: () => setIsPlaying((playing) => !playing),
     next: () => goToStep(stepIndex + 1),
     previous: () => goToStep(stepIndex - 1),

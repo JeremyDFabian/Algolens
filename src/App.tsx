@@ -30,7 +30,7 @@ function App() {
   const counts = useMemo(() => sumCost(steps, playback.stepIndex), [steps, playback.stepIndex]);
 
   useEffect(() => {
-    playback.setStepIndex(0);
+    playback.reset();
   }, [topicId]);
 
   return (
