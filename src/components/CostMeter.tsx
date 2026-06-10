@@ -1,6 +1,13 @@
-import type { CostModel, StepCost } from '../visualizers';
+import type { CostMetric, CostModel, StepCost } from '../visualizers';
 
 type Counts = Required<StepCost>;
+
+const METRICS: Array<[CostMetric, string]> = [
+  ['comparisons', 'Comparisons'],
+  ['swaps', 'Swaps'],
+  ['writes', 'Writes'],
+  ['reads', 'Reads']
+];
 
 export function CostMeter({ counts, model }: { counts: Counts; model: Readonly<CostModel> }) {
   const actual = counts[model.headline];
@@ -21,18 +28,12 @@ export function CostMeter({ counts, model }: { counts: Counts; model: Readonly<C
         Actual vs <b>{model.boundLabel}</b> for n={model.n} → ~{bound}
       </p>
       <dl className="cost-breakdown">
-        {model.headline !== 'comparisons' && (
-          <div><dt>Comparisons</dt><dd>{counts.comparisons}</dd></div>
-        )}
-        {model.headline !== 'swaps' && (
-          <div><dt>Swaps</dt><dd>{counts.swaps}</dd></div>
-        )}
-        {model.headline !== 'writes' && (
-          <div><dt>Writes</dt><dd>{counts.writes}</dd></div>
-        )}
-        {model.headline !== 'reads' && (
-          <div><dt>Reads</dt><dd>{counts.reads}</dd></div>
-        )}
+        {METRICS.filter(([metric]) => metric !== model.headline).map(([metric, label]) => (
+          <div key={metric}>
+            <dt>{label}</dt>
+            <dd>{counts[metric]}</dd>
+          </div>
+        ))}
       </dl>
     </section>
   );

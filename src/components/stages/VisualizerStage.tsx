@@ -1,8 +1,6 @@
 import { motion } from 'framer-motion';
 import { TopicId, TreeNode, VisualItem, VisualStep, activeIndices } from '../../visualizers';
-import { Playhead } from '../Playhead';
-
-const SPRING = { type: 'spring', stiffness: 320, damping: 30 } as const;
+import { Playhead, SPRING } from '../Playhead';
 
 export function VisualizerStage({ step, topicId }: { step: VisualStep; topicId: TopicId }) {
   const frame = activeIndices(step)[0] ?? -1;
@@ -31,6 +29,7 @@ function ArrayStage({
   frame: number;
 }) {
   const isQueue = topicId === 'queue';
+  const pointerEntries = Object.entries(pointers ?? {});
 
   return (
     <div className={`visual-stage ${isQueue ? 'queue-mode' : ''}`}>
@@ -46,7 +45,7 @@ function ArrayStage({
             {index === frame ? <Playhead /> : null}
             <span>{visualItem.value}</span>
             <small>{index}</small>
-            {Object.entries(pointers ?? {}).map(([name, pointerIndex]) =>
+            {pointerEntries.map(([name, pointerIndex]) =>
               pointerIndex === index ? (
                 <em key={name} className="pointer-tag">
                   {name}
