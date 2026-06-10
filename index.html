@@ -6,7 +6,12 @@
     <title>DSA Visualizer Lab</title>
     <script>
       (function () {
-        var t = localStorage.getItem('algolens-theme');
+        var t = null;
+        try {
+          t = localStorage.getItem('algolens-theme');
+        } catch (e) {
+          /* storage blocked; fall back to the media query */
+        }
         if (t !== 'light' && t !== 'dark') {
           t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
         }
